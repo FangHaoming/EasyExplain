@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <title>AIExplain 目录概览</title>
+</head>
+<body>
+  <h1>AIExplain 目录概览</h1>
+  <p>本目录实现 AI 解释临时对话。它不参与翻译服务排序，也不写入查询结果列表，而是通过查询窗口标题栏按钮读取当前查询文本，或通过全局快捷键读取系统当前选中文字，打开独立的解释浮层。</p>
+  <h2>职责</h2>
+  <ul>
+    <li><strong>配置读取</strong>：<code>AIExplainConfiguration</code> 从 Defaults 捕获 provider、endpoint、API Key、model 与系统提示词。</li>
+    <li><strong>协议选择</strong>：<code>AIExplainProvider</code> 区分 OpenAI 兼容和 Anthropic 兼容协议，提供默认 endpoint 与 model。</li>
+    <li><strong>网络请求</strong>：<code>AIExplainClient</code> 使用 <code>URLSession.bytes</code> 发起 SSE 请求，并分别解析 OpenAI delta 与 Anthropic text_delta。</li>
+    <li><strong>会话状态</strong>：<code>AIExplainViewModel</code> 保存本次 panel 内的消息历史，控制初始解释、追问、错误和取消，并对流式文本片段做短周期合并刷新，避免 SwiftUI 在同一帧内重复更新。</li>
+    <li><strong>界面展示</strong>：<code>AIExplainPopoverView</code> 使用 SwiftUI 展示标题、pin 控件、消息列表和追问输入框，标题栏背景可拖动整个解释面板。</li>
+    <li><strong>Markdown 渲染</strong>：<code>AIExplainMarkdownView</code> 通过非滚动 <code>WKWebView</code> 承载助手内容，<code>AIExplainMarkdownHTML</code> 生成 HTML 壳并加载打包进 app 的 <code>marked.umd.js</code>，支持 GitHub Flavored Markdown 的标题、列表、任务项、表格、引用、代码块、链接和内联样式。</li>
+    <li><strong>AppKit 桥接</strong>：<code>AIExplainPopoverPresenter</code> 把 Objective-C 标题栏按钮和全局快捷键连接到 SwiftUI <code>NSPanel</code>，用普通窗口关闭路径避开 WebView 与 popover 关闭链路的卡顿。</li>
+  </ul>
+  <h2>关键流程</h2>
+  <h3>标题栏按钮</h3>
+  <ol>
+    <li>用户点击标题栏“解释”按钮。</li>
+    <li>Objective-C 标题栏从查询窗口控制器读取 <code>queryModel.queryText</code>。</li>
+    <li>Presenter 根据翻译窗口位置创建 panel 和 SwiftUI view，优先放在翻译窗口左右侧的可见空间，并使用高于翻译浮窗的层级避免被遮挡。</li>
+    <li>Panel 默认监听内外部鼠标点击，点击解释面板外会关闭；用户 pin 住后外部点击不关闭。</li>
+    <li>ViewModel 首次出现时提交解释请求。</li>
+    <li>Client 按 provider 构造请求并流式返回文本片段。</li>
+    <li>ViewModel 合并 assistant 流式片段后追加内容，Markdown WebView 节流重渲染本地 <code>marked</code> 输出并回传内容高度，界面只在新增消息时自动滚动到底部。</li>
+    <li>用户追问时复用当前消息历史；关闭或取消时终止请求。</li>
+  </ol>
+  <h3>全局快捷键</h3>
+  <ol>
+    <li>用户在任意应用选中文字后按下 AI 解释快捷键。</li>
+    <li>快捷键 action 调用 <code>EventMonitor.getSelectedTextWithCompletion</code>，复用选中翻译的 Accessibility、浏览器 AppleScript 与强制复制兜底链路。</li>
+    <li>Presenter 在鼠标位置附近显示 AI 解释 panel。</li>
+    <li>ViewModel 首次出现时提交解释请求。</li>
+    <li>Client 按 provider 构造请求并流式返回文本片段。</li>
+    <li>ViewModel 合并 assistant 流式片段后追加内容，Markdown WebView 节流重渲染本地 <code>marked</code> 输出并回传内容高度，界面只在新增消息时自动滚动到底部。</li>
+    <li>用户追问时复用当前消息历史；关闭或取消时终止请求。</li>
+  </ol>
+  <h2>边界与失败处理</h2>
+  <ul>
+    <li>空查询文本、空 API Key、空 model 和非法 URL 会在本地拦截并显示错误。</li>
+    <li>HTTP 非 2xx 响应读取前 4KB 错误体，转成用户可见错误。</li>
+    <li>Panel 默认由关闭按钮、再次触发入口、外部点击或 presenter 主动关闭；pin 后外部点击只切换焦点，不关闭解释浮层。</li>
+    <li>Panel 关闭会调用 ViewModel 和 Client 的取消逻辑，避免后台继续流式写状态。</li>
+    <li>Markdown WebView 会阻止浮层内导航，链接交给系统浏览器打开；销毁时移除 WebKit 消息回调，避免保留无效视图。</li>
+    <li>Anthropic 系统提示词放在顶层 <code>system</code> 字段，不混入 messages。</li>
+  </ul>
+  <h2>调试入口</h2>
+  <ul>
+    <li>设置页“AI 解释”区块用于切换 provider 和检查配置值。</li>
+    <li>查询窗口标题栏按钮用于验证 Objective-C 到 SwiftUI 的桥接。</li>
+    <li>全局 AI 解释快捷键用于验证系统选中文字到独立解释浮层的路径。</li>
+    <li>Xcode 控制台中的 <code>QueryError</code> 文案可辅助定位 URL、鉴权和响应格式问题。</li>
+  </ul>
+</body>
+</html>

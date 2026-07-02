@@ -195,6 +195,41 @@ extension Defaults.Keys {
         default: true
     )
 
+    static let enableAIExplain = Key<Bool>(
+        "EZConfiguration_kEnableAIExplain",
+        default: true
+    )
+    static let aiExplainProvider = Key<AIExplainProvider>(
+        "EZConfiguration_kAIExplainProvider",
+        default: .openAICompatible
+    )
+    static let aiExplainAPIURL = Key<String>(
+        "EZConfiguration_kAIExplainAPIURL",
+        default: ""
+    )
+    static let aiExplainAPIKey = Key<String>(
+        "EZConfiguration_kAIExplainAPIKey",
+        default: ""
+    )
+    static let aiExplainModel = Key<String>(
+        "EZConfiguration_kAIExplainModel",
+        default: ""
+    )
+    static let aiExplainOutputLanguage = Key<AIExplainOutputLanguage>(
+        "EZConfiguration_kAIExplainOutputLanguage",
+        default: .simplifiedChinese
+    )
+    static let aiExplainSystemPrompt = Key<String>(
+        "EZConfiguration_kAIExplainSystemPrompt",
+        default: Defaults.Keys.defaultAIExplainSystemPrompt
+    )
+
+    static let defaultAIExplainSystemPrompt = """
+    You are a concise explanation assistant. Explain the selected text in the requested output language.
+    Focus on meaning, context, key terms, and practical examples. Use clear Markdown.
+    Do not translate only unless translation is necessary for the explanation.
+    """
+
     static let autoSelectAllTextFieldText = Key<Bool>(
         "EZConfiguration_kAutoSelectAllTextFieldText",
         default: true
@@ -404,6 +439,10 @@ extension Defaults.Keys {
     )
     static let polishAndReplaceShortcut = Key<KeyCombo?>(
         "EZPolishAndReplaceShortcutKey_keyHolder"
+    )
+    static let aiExplainShortcut = Key<KeyCombo?>(
+        "EZAIExplainShortcutKey_keyHolder",
+        default: KeyCombo(key: .e, cocoaModifiers: .option)
     )
 
     static let screenshotOCRShortcut = Key<KeyCombo?>("EZScreenshotOCRShortcutKey2_keyHolder")

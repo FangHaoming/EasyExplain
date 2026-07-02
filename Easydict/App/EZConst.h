@@ -9,6 +9,8 @@
 #ifndef EZConst_h
 #define EZConst_h
 
+#import <ApplicationServices/ApplicationServices.h>
+
 static CGFloat const EZHorizontalCellSpacing_10 = 10;
 static CGFloat const EZVerticalCellSpacing_7 = 7;
 

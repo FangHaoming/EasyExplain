@@ -22,6 +22,7 @@ extension ShortcutManager {
         Defaults[.inputShortcut] = KeyCombo(key: .a, cocoaModifiers: .option)
         Defaults[.snipShortcut] = KeyCombo(key: .s, cocoaModifiers: .option)
         Defaults[.selectionShortcut] = KeyCombo(key: .d, cocoaModifiers: .option)
+        Defaults[.aiExplainShortcut] = KeyCombo(key: .e, cocoaModifiers: .option)
         Defaults[.showMiniWindowShortcut] = KeyCombo(key: .f, cocoaModifiers: .option)
         Defaults[.silentScreenshotOCRShortcut] = KeyCombo(
             key: .s, cocoaModifiers: [.option, .shift]

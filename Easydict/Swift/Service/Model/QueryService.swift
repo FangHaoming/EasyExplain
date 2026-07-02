@@ -8,6 +8,7 @@
 
 import AppKit
 import Foundation
+import MJExtension
 
 // MARK: - ServiceAPIKeyRequirement
 
@@ -43,6 +44,7 @@ open class QueryService: NSObject {
     // MARK: Lifecycle
 
     required public override init() {
+        _ = QueryServiceMJExtension.configureIgnoredProperties
         self.queryModel = QueryModel()
         super.init()
     }
@@ -116,13 +118,6 @@ open class QueryService: NSObject {
             return storedAudioPlayer
         }
         set { storedAudioPlayer = newValue }
-    }
-
-    // MARK: - MJExtension
-
-    /// Avoid MJExtension retain cycle.
-    open class func mj_ignoredPropertyNames() -> [String] {
-        ["result"]
     }
 
     // MARK: - Public API
@@ -654,4 +649,15 @@ open class QueryService: NSObject {
         result = newResult
         return newResult
     }
+}
+
+// MARK: - QueryServiceMJExtension
+
+/// Installs MJExtension metadata for `QueryService`.
+private enum QueryServiceMJExtension {
+    static let configureIgnoredProperties: () = {
+        QueryService.mj_setupIgnoredPropertyNames {
+            ["result"]
+        }
+    }()
 }

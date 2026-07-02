@@ -278,11 +278,6 @@ public class QueryResult: NSObject {
         error?.localizedDescription
     }
 
-    /// Returns property names that should be ignored by MJExtension.
-    class func mj_ignoredPropertyNames() -> [String] {
-        []
-    }
-
     /// Flips the Markdown rendering decision for this result, overriding the
     /// global setting until the result is reset by a new query.
     func toggleMarkdownRendering() {

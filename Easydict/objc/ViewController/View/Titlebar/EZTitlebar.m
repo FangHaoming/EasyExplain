@@ -13,6 +13,7 @@
 #import "NSImage+EZSymbolmage.h"
 #import "NSObject+EZDarkMode.h"
 #import "EZBaseQueryWindow.h"
+#import <Easydict-Swift.h>
 
 
 typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
@@ -80,6 +81,7 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     [_stackView removeFromSuperview];
     _stackView = nil;
     _quickActionButton = nil;
+    _explainButton = nil;
     _quickActionMenu = nil;
 
     [self updatePinButton];
@@ -107,6 +109,10 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
     
     if (MyConfiguration.shared.showQuickActionButton) {
         [self.stackView addArrangedSubview:self.quickActionButton];
+    }
+
+    if (MyConfiguration.shared.enableAIExplain) {
+        [self.stackView addArrangedSubview:self.explainButton];
     }
     
     for (NSNumber *typeNumber in [self shortcutButtonTypes]) {
@@ -146,6 +152,13 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
 
 - (void)goToSettings {
     [[NSNotificationCenter defaultCenter] postNotificationName:EZOpenSettingsNotification object:nil];
+}
+
+- (void)showAIExplainPopover {
+    EZBaseQueryWindow *window = (EZBaseQueryWindow *)self.window;
+    EZBaseQueryViewController *viewController = window.queryViewController;
+    NSString *queryText = viewController.queryModel.queryText ?: @"";
+    [AIExplainPopoverPresenter.shared toggleWithAnchorView:self.explainButton queryText:queryText];
 }
 
 #pragma mark - Getter && Setter
@@ -274,6 +287,37 @@ typedef NS_ENUM(NSInteger, EZTitlebarButtonType) {
         }];
     }
     return _quickActionButton;
+}
+
+- (EZOpenLinkButton *)explainButton {
+    if (!_explainButton) {
+        EZOpenLinkButton *explainButton = [[EZOpenLinkButton alloc] init];
+        _explainButton = explainButton;
+        NSImage *image = [NSImage ez_imageWithSymbolName:@"sparkles" size:self.imageSize scale:NSImageSymbolScaleMedium];
+        explainButton.image = image;
+        explainButton.toolTip = NSLocalizedString(@"ai_explain.button.tooltip", nil);
+        explainButton.contentTintColor = NSColor.clearColor;
+
+        mm_weakify(self);
+        [explainButton setClickBlock:^(EZButton *_Nonnull button) {
+            mm_strongify(self);
+            [self showAIExplainPopover];
+        }];
+
+        NSColor *lightTintColor = [NSColor mm_colorWithHexString:@"#797A7F"];
+        NSColor *darkTintColor = [NSColor mm_colorWithHexString:@"#C0C1C4"];
+        CGSize imageSize = self.imageSize;
+
+        [explainButton executeOnAppearanceChange:^(EZButton *button, BOOL isDarkMode) {
+            NSColor *tintColor = isDarkMode ? darkTintColor : lightTintColor;
+            button.image = [[image imageWithTintColor:tintColor] resizeToSize:imageSize];
+        }];
+
+        [explainButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(self.buttonSize);
+        }];
+    }
+    return _explainButton;
 }
 
 - (EZOpenLinkButton *)googleButton {
