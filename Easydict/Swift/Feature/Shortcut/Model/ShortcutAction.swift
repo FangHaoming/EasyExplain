@@ -24,6 +24,7 @@ public enum ShortcutAction: String, Identifiable, CaseIterable {
     case pasteboardTranslate
     case polishAndReplace
     case translateAndReplace
+    case aiExplain
     case silentScreenshotOCR
 
     // OCR specific shortcuts
@@ -64,6 +65,7 @@ extension ShortcutAction {
         .pasteboardTranslate,
         .polishAndReplace,
         .translateAndReplace,
+        .aiExplain,
         .silentScreenshotOCR,
         .screenshotOCR,
         .pasteboardOCR,
@@ -178,6 +180,12 @@ extension ShortcutAction {
                 icon: .arrowLeftArrowRightSquare,
                 defaultsKey: .translateAndReplaceShortcut,
                 action: { await ActionManager.shared.translateAndReplace() }
+            ),
+            .aiExplain: .init(
+                titleKey: "shortcut_ai_explain",
+                icon: .sparkles,
+                defaultsKey: .aiExplainShortcut,
+                action: { AIExplainPopoverPresenter.shared.explainSelectedText() }
             ),
             .showMiniWindow: .init(
                 titleKey: "menu_show_mini_window",

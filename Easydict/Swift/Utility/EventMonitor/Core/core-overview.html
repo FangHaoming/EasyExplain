@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <title>EventMonitor Core 目录概览</title>
+</head>
+<body>
+  <h1>EventMonitor Core 目录概览</h1>
+  <p>本目录承载全局事件监控的核心入口和应用上下文采集。它连接 AppKit 事件、选中文字工作流、浮窗关闭边界和浏览器上下文记录，是选中翻译、自动取词、快捷键取词等功能的共享底座。</p>
+  <h2>职责</h2>
+  <ul>
+    <li><strong>事件入口</strong>：<code>EventMonitor</code> 创建本地、全局和高频事件监控，处理鼠标、键盘、修饰键和截图状态。</li>
+    <li><strong>选中文字</strong>：<code>EventMonitor</code> 调用 <code>SelectionWorkflow</code>，统一 Accessibility、浏览器 AppleScript 与强制复制兜底策略，并回写选中文本类型和编辑状态。</li>
+    <li><strong>上下文采集</strong>：<code>AppContextProvider</code> 记录前台应用、浏览器标签 URL、首次 Accessibility 使用状态和输入焦点信息。</li>
+    <li><strong>浮窗边界</strong>：鼠标按下时使用 <code>NSWindow.windowNumber(at:)</code> 判断是否点击在翻译浮窗内；额外的 <code>shouldKeepFloatingWindowBlock</code> 允许临时辅助浮窗声明自己不应触发翻译浮窗关闭。</li>
+  </ul>
+  <h2>关键流程</h2>
+  <ol>
+    <li>应用启动时配置 EventMonitor 依赖，并根据设置开启本地与全局事件监听。</li>
+    <li>鼠标和键盘事件进入 <code>handleMonitorEvent</code>，更新起止点、触发类型和自动取词状态。</li>
+    <li>需要读取选中文字时，<code>getSelectedTextWithCompletion</code> 调用 SelectionWorkflow，并把结果写回共享状态。</li>
+    <li>鼠标点击发生在翻译浮窗外时，Core 默认触发关闭未固定浮窗；如果辅助浮窗命中 <code>shouldKeepFloatingWindowBlock</code>，则保留当前浮窗。</li>
+    <li>AI 解释等功能可注册保留判断，让用户点击解释 popover 内部时不会关闭底层翻译面板。</li>
+  </ol>
+  <h2>边界与失败处理</h2>
+  <ul>
+    <li>Accessibility 未授权时按现有流程提示授权或返回空选中文本。</li>
+    <li>强制复制只在配置允许、前台应用不是 Easydict、并且错误类型或快捷键路径允许时启用。</li>
+    <li>窗口命中测试使用 AppKit 的窗口编号，避免多屏和缩放坐标下误判点击位置。</li>
+    <li><code>shouldKeepFloatingWindowBlock</code> 是 Swift-only 闭包，不暴露给 Objective-C 桥接头，避免破坏旧代码接口。</li>
+  </ul>
+  <h2>调试入口</h2>
+  <ul>
+    <li>Xcode 控制台中的 <code>getSelectedText</code>、<code>Fallback</code> 和 <code>windowNumber</code> 相关日志可定位取词与关闭路径。</li>
+    <li>全局选中翻译快捷键和 AI 解释快捷键都能验证 SelectionWorkflow 的快捷键取词路径。</li>
+    <li>点击翻译浮窗、AI 解释 popover 和外部应用窗口，可验证未固定浮窗关闭边界。</li>
+  </ul>
+</body>
+</html>

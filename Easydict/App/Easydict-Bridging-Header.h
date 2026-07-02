@@ -2,7 +2,6 @@
 //  Use this file to import your target's public headers that you would like to expose to Swift.
 //
 
-#import "MMLog.h"
 #import "EZConstKey.h"
 #import "EZConst.h"
 #import "NSColor+MyColors.h"
@@ -23,3 +22,20 @@
 
 #import "EZLabel.h"
 #import "EZHoverButton.h"
+
+@class DDLog;
+
+#ifndef MM_MANAGER_FOR_LOG_DECLARED
+#define MM_MANAGER_FOR_LOG_DECLARED
+
+@interface MMManagerForLog : NSObject
+
++ (DDLog *)sharedDDLog;
++ (DDLog *)createADDLogWithName:(NSString *)name;
++ (NSString *)rootLogDirectory;
++ (NSString *)defaultLogDirectory;
++ (NSString *)logDirectoryWithName:(NSString *)name;
+
+@end
+
+#endif

@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 720" role="img" aria-labelledby="title desc">
+  <title id="title">AIExplain Architecture</title>
+  <desc id="desc">AI explanation architecture with title bar and global shortcut entry paths, explicit panel lifecycle, Markdown rendering, and provider streaming.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/>
+    </marker>
+    <marker id="softArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font: 700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111827; }
+      .label { font: 600 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111827; }
+      .small { font: 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #4b5563; }
+      .tiny { font: 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748b; }
+      .box { fill: #ffffff; stroke: #d1d5db; stroke-width: 1.5; rx: 12; }
+      .group { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 6 5; rx: 18; }
+      .entry { fill: #eff6ff; stroke: #60a5fa; }
+      .state { fill: #f0fdf4; stroke: #86efac; }
+      .render { fill: #f5f3ff; stroke: #a78bfa; }
+      .network { fill: #fff7ed; stroke: #fdba74; }
+      .lifecycle { fill: #fef2f2; stroke: #fca5a5; }
+      .arrow { stroke: #2563eb; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .soft { stroke: #64748b; stroke-width: 1.8; fill: none; marker-end: url(#softArrow); stroke-dasharray: 6 5; }
+    </style>
+  </defs>
+
+  <rect width="1080" height="720" fill="#f9fafb"/>
+  <text x="40" y="48" class="title">AIExplain 双入口解释架构</text>
+
+  <rect x="40" y="82" width="280" height="538" class="group"/>
+  <text x="60" y="112" class="label">输入入口</text>
+  <rect x="70" y="142" width="220" height="74" class="box entry"/>
+  <text x="90" y="172" class="label">EZTitlebar</text>
+  <text x="90" y="194" class="small">标题栏解释按钮</text>
+  <rect x="70" y="248" width="220" height="86" class="box"/>
+  <text x="90" y="279" class="label">Query Controller</text>
+  <text x="90" y="301" class="small">读取 queryModel.queryText</text>
+  <rect x="70" y="376" width="220" height="86" class="box entry"/>
+  <text x="90" y="407" class="label">ShortcutAction.aiExplain</text>
+  <text x="90" y="429" class="small">Option+E 全局快捷键</text>
+  <rect x="70" y="494" width="220" height="86" class="box state"/>
+  <text x="90" y="525" class="label">EventMonitor</text>
+  <text x="90" y="547" class="small">AX / AppleScript / 强制复制</text>
+
+  <rect x="380" y="82" width="300" height="538" class="group"/>
+  <text x="400" y="112" class="label">Panel 展示层</text>
+  <rect x="410" y="142" width="240" height="86" class="box state"/>
+  <text x="430" y="173" class="label">AIExplainPopoverPresenter</text>
+  <text x="430" y="195" class="small">侧边定位 / 高于翻译浮窗</text>
+  <rect x="410" y="260" width="240" height="76" class="box lifecycle"/>
+  <text x="430" y="290" class="label">Panel Lifecycle</text>
+  <text x="430" y="312" class="small">pin / drag / outside close</text>
+  <rect x="410" y="368" width="240" height="86" class="box"/>
+  <text x="430" y="399" class="label">AIExplainPopoverView</text>
+  <text x="430" y="421" class="small">消息列表 / 追问输入</text>
+  <rect x="410" y="486" width="240" height="84" class="box render"/>
+  <text x="430" y="517" class="label">Markdown WebView</text>
+  <text x="430" y="539" class="small">marked.umd.js / 高度回传</text>
+
+  <rect x="740" y="82" width="300" height="538" class="group"/>
+  <text x="760" y="112" class="label">AI 会话与协议层</text>
+  <rect x="770" y="142" width="240" height="86" class="box state"/>
+  <text x="790" y="173" class="label">AIExplainViewModel</text>
+  <text x="790" y="195" class="small">初始解释 / 追问 / 取消</text>
+  <rect x="770" y="260" width="240" height="76" class="box state"/>
+  <text x="790" y="290" class="label">Configuration</text>
+  <text x="790" y="312" class="small">provider / endpoint / model / key</text>
+  <rect x="770" y="368" width="240" height="86" class="box network"/>
+  <text x="790" y="399" class="label">AIExplainClient</text>
+  <text x="790" y="421" class="small">URLSession.bytes SSE</text>
+  <rect x="770" y="486" width="240" height="96" class="box network"/>
+  <text x="790" y="517" class="label">Providers</text>
+  <text x="790" y="539" class="small">OpenAI Chat Completions</text>
+  <text x="790" y="559" class="small">Anthropic Messages</text>
+
+  <path d="M290 179 H410" class="arrow"/>
+  <text x="318" y="166" class="small">toggle(anchor)</text>
+  <path d="M180 216 V248" class="arrow"/>
+  <text x="194" y="238" class="tiny">queryText</text>
+  <path d="M290 291 C342 291 342 185 410 185" class="arrow"/>
+  <text x="312" y="260" class="small">current query</text>
+
+  <path d="M180 462 V494" class="arrow"/>
+  <text x="194" y="484" class="tiny">shortcutQuery</text>
+  <path d="M290 537 C350 537 342 185 410 185" class="arrow"/>
+  <text x="318" y="520" class="small">selected text</text>
+  <path d="M410 208 C362 234 350 270 350 312 C350 354 370 388 410 411" class="soft"/>
+  <text x="332" y="352" class="tiny">standalone anchor window</text>
+
+  <path d="M530 228 V260" class="arrow"/>
+  <text x="544" y="249" class="tiny">lifecycle</text>
+  <path d="M530 336 V368" class="arrow"/>
+  <text x="544" y="357" class="tiny">SwiftUI host</text>
+  <path d="M530 454 V486" class="arrow"/>
+  <text x="544" y="476" class="tiny">assistant markdown</text>
+
+  <path d="M650 411 H770" class="arrow"/>
+  <text x="675" y="398" class="small">messages</text>
+  <path d="M890 228 V260" class="arrow"/>
+  <text x="904" y="249" class="tiny">snapshot</text>
+  <path d="M890 336 V368" class="arrow"/>
+  <text x="904" y="357" class="tiny">request</text>
+  <path d="M890 454 V486" class="arrow"/>
+  <text x="904" y="476" class="tiny">protocol</text>
+  <path d="M770 431 H650" class="arrow"/>
+  <text x="660" y="454" class="small">batched stream delta</text>
+  <path d="M770 298 H650" class="soft"/>
+  <text x="688" y="286" class="small">Defaults.current</text>
+
+  <rect x="40" y="650" width="1000" height="40" class="box"/>
+  <text x="60" y="675" class="small">边界：空文本不打开解释浮层；关闭按钮、再次触发入口、外部点击或 presenter close 会取消流式请求，pin 后外部点击不关闭。</text>
+</svg>

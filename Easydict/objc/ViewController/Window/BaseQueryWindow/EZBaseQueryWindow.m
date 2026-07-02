@@ -10,6 +10,7 @@
 #import "EZTitlebar.h"
 #import "EZWindowManager.h"
 #import "NSImage+EZResize.h"
+#import <Easydict-Swift.h>
 
 
 @interface EZBaseQueryWindow () <NSWindowDelegate, NSToolbarDelegate>
@@ -129,7 +130,11 @@
 
 - (void)windowDidResignKey:(NSNotification *)notification {
     //    MMLogInfo(@"windowDidResignKey: %@", self);
-    
+
+    if ([AIExplainPopoverPresenter.shared containsMouseLocation]) {
+        return;
+    }
+
     // Close floating window when losing focus if it's not pinned or main window.
     [EZWindowManager.shared closeFloatingWindowIfNotPinned:self.windowType exceptWindowType:EZWindowTypeMain];
 }

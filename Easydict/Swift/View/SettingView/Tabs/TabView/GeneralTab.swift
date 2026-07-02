@@ -106,6 +106,54 @@ struct GeneralTab: View {
             }
 
             Section {
+                Toggle("setting.general.ai_explain.enable", isOn: $enableAIExplain)
+
+                Picker("setting.general.ai_explain.provider", selection: $aiExplainProvider) {
+                    ForEach(AIExplainProvider.allCases, id: \.rawValue) { provider in
+                        Text(provider.localizedStringResource)
+                            .tag(provider)
+                    }
+                }
+
+                TextField(
+                    "setting.general.ai_explain.api_url",
+                    text: $aiExplainAPIURL,
+                    prompt: Text(aiExplainProvider.defaultEndpoint)
+                )
+
+                SecureTextField(
+                    title: "setting.general.ai_explain.api_key",
+                    placeholder: "setting.general.ai_explain.api_key.placeholder",
+                    text: $aiExplainAPIKey,
+                    showText: false
+                )
+
+                TextField(
+                    "setting.general.ai_explain.model",
+                    text: $aiExplainModel,
+                    prompt: Text(aiExplainProvider.defaultModel)
+                )
+
+                Picker("setting.general.ai_explain.output_language", selection: $aiExplainOutputLanguage) {
+                    ForEach(AIExplainOutputLanguage.allCases, id: \.rawValue) { language in
+                        Text(language.title)
+                            .tag(language)
+                    }
+                }
+
+                TextEditorWithPlaceholder(
+                    text: $aiExplainSystemPrompt,
+                    placeholder: "setting.general.ai_explain.system_prompt.placeholder"
+                )
+                .frame(minHeight: 90)
+            } header: {
+                Text("setting.general.ai_explain.header")
+            } footer: {
+                Text("setting.general.ai_explain.footer")
+                    .font(.footnote)
+            }
+
+            Section {
                 Toggle(isOn: $enableMarkdownRendering) {
                     Label(
                         "setting.general.display.enable_markdown_rendering",
@@ -297,6 +345,15 @@ struct GeneralTab: View {
     @Default(.showEudicQuickLink) private var showEudicQuickLink
     @Default(.showAppleDictionaryQuickLink) private var showAppleDictionaryQuickLink
     @Default(.showQuickActionButton) private var showQuickActionButton
+
+    // AI explain
+    @Default(.enableAIExplain) private var enableAIExplain
+    @Default(.aiExplainProvider) private var aiExplainProvider
+    @Default(.aiExplainAPIURL) private var aiExplainAPIURL
+    @Default(.aiExplainAPIKey) private var aiExplainAPIKey
+    @Default(.aiExplainModel) private var aiExplainModel
+    @Default(.aiExplainOutputLanguage) private var aiExplainOutputLanguage
+    @Default(.aiExplainSystemPrompt) private var aiExplainSystemPrompt
 
     @Default(.appearanceType) private var appearanceType
     @Default(.hideMenuBarIcon) private var hideMenuBarIcon

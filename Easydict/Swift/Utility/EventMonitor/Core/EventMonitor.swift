@@ -76,6 +76,7 @@ final class EventMonitor: NSObject {
     var doubleCommandBlock: VoidBlock?
     var leftMouseDownBlock: PointBlock?
     var rightMouseDownBlock: PointBlock?
+    @nonobjc var shouldKeepFloatingWindowBlock: ((CGPoint) -> Bool)?
 
     // MARK: Public API
 
@@ -444,7 +445,8 @@ final class EventMonitor: NSObject {
         let windowNumberAtPoint = NSWindow.windowNumber(at: mouseLocation, belowWindowWithWindowNumber: 0)
         let clickedOnFloatingWindow = windowNumberAtPoint == floatingWindow.windowNumber
 
-        if !clickedOnFloatingWindow {
+        if !clickedOnFloatingWindow,
+           shouldKeepFloatingWindowBlock?(mouseLocation) != true {
             dismissAllNotPinndFloatingWindowBlock?()
         }
     }

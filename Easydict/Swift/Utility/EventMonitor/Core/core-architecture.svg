@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 640" role="img" aria-labelledby="title desc">
+  <title id="title">EventMonitor Core Architecture</title>
+  <desc id="desc">Core event monitor architecture for input events, selected text workflow, app context, and floating window retention.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/>
+    </marker>
+    <marker id="softArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+    <style>
+      .title { font: 700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111827; }
+      .label { font: 600 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111827; }
+      .small { font: 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #4b5563; }
+      .tiny { font: 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #64748b; }
+      .box { fill: #ffffff; stroke: #d1d5db; stroke-width: 1.5; rx: 12; }
+      .group { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 6 5; rx: 18; }
+      .event { fill: #eff6ff; stroke: #60a5fa; }
+      .state { fill: #f0fdf4; stroke: #86efac; }
+      .context { fill: #f5f3ff; stroke: #a78bfa; }
+      .boundary { fill: #fff7ed; stroke: #fdba74; }
+      .arrow { stroke: #2563eb; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .soft { stroke: #64748b; stroke-width: 1.8; fill: none; marker-end: url(#softArrow); stroke-dasharray: 6 5; }
+    </style>
+  </defs>
+
+  <rect width="1040" height="640" fill="#f9fafb"/>
+  <text x="40" y="48" class="title">EventMonitor Core 事件与浮窗边界</text>
+
+  <rect x="40" y="82" width="260" height="450" class="group"/>
+  <text x="60" y="112" class="label">事件来源</text>
+  <rect x="70" y="142" width="200" height="76" class="box event"/>
+  <text x="90" y="172" class="label">Local Monitor</text>
+  <text x="90" y="194" class="small">App 内键鼠事件</text>
+  <rect x="70" y="252" width="200" height="76" class="box event"/>
+  <text x="90" y="282" class="label">Global Monitor</text>
+  <text x="90" y="304" class="small">系统范围键鼠事件</text>
+  <rect x="70" y="362" width="200" height="86" class="box event"/>
+  <text x="90" y="393" class="label">High Frequency</text>
+  <text x="90" y="415" class="small">自动取词按钮 hover</text>
+
+  <rect x="380" y="82" width="280" height="450" class="group"/>
+  <text x="400" y="112" class="label">EventMonitor</text>
+  <rect x="410" y="142" width="220" height="76" class="box state"/>
+  <text x="430" y="172" class="label">handleMonitorEvent</text>
+  <text x="430" y="194" class="small">更新点位与触发类型</text>
+  <rect x="410" y="252" width="220" height="86" class="box state"/>
+  <text x="430" y="283" class="label">getSelectedText</text>
+  <text x="430" y="305" class="small">写回文本与编辑状态</text>
+  <rect x="410" y="376" width="220" height="92" class="box boundary"/>
+  <text x="430" y="407" class="label">Floating Boundary</text>
+  <text x="430" y="429" class="small">windowNumber(at:)</text>
+  <text x="430" y="449" class="small">shouldKeepFloatingWindowBlock</text>
+
+  <rect x="740" y="82" width="260" height="450" class="group"/>
+  <text x="760" y="112" class="label">协作对象</text>
+  <rect x="770" y="142" width="200" height="86" class="box context"/>
+  <text x="790" y="173" class="label">AppContextProvider</text>
+  <text x="790" y="195" class="small">前台 app / 浏览器 URL</text>
+  <rect x="770" y="260" width="200" height="86" class="box context"/>
+  <text x="790" y="291" class="label">SelectionWorkflow</text>
+  <text x="790" y="313" class="small">AX / AppleScript / copy</text>
+  <rect x="770" y="378" width="200" height="92" class="box boundary"/>
+  <text x="790" y="409" class="label">Window Owners</text>
+  <text x="790" y="431" class="small">EZWindowManager</text>
+  <text x="790" y="451" class="small">AIExplain popover</text>
+
+  <path d="M270 180 H410" class="arrow"/>
+  <text x="304" y="166" class="small">local events</text>
+  <path d="M270 290 H410" class="arrow"/>
+  <text x="306" y="276" class="small">global events</text>
+  <path d="M270 405 H410" class="arrow"/>
+  <text x="304" y="392" class="small">mouse moved</text>
+
+  <path d="M630 180 H770" class="arrow"/>
+  <text x="666" y="166" class="small">record context</text>
+  <path d="M630 295 H770" class="arrow"/>
+  <text x="668" y="282" class="small">selection request</text>
+  <path d="M770 314 H630" class="arrow"/>
+  <text x="666" y="338" class="small">selected text</text>
+  <path d="M630 422 H770" class="arrow"/>
+  <text x="660" y="409" class="small">close or keep</text>
+  <path d="M770 452 H630" class="soft"/>
+  <text x="650" y="482" class="small">AI explain keeps window</text>
+
+  <rect x="40" y="566" width="960" height="42" class="box"/>
+  <text x="60" y="592" class="small">关闭边界：点击翻译浮窗外默认关闭未固定窗口；辅助浮窗命中 keep block 时保留，避免内部交互误关底层面板。</text>
+</svg>

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-@import CocoaLumberjack;
+#import <CocoaLumberjack/DDLog.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

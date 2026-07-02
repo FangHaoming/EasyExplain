@@ -24,7 +24,12 @@
  * MMDefaultLogAsyncEnabled: NO => 同步打印；YES => 异步输出
  */
 
-@import CocoaLumberjack;
+#import <CocoaLumberjack/DDFileLogger.h>
+#import <CocoaLumberjack/DDLog.h>
+#import <CocoaLumberjack/DDOSLogger.h>
+
+#ifndef MM_MANAGER_FOR_LOG_DECLARED
+#define MM_MANAGER_FOR_LOG_DECLARED
 
 @interface MMManagerForLog : NSObject
 
@@ -44,6 +49,8 @@
 + (NSString *)logDirectoryWithName:(NSString *)name;
 
 @end
+
+#endif
 
 
 extern DDLogLevel MMDefaultLogLevel;

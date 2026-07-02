@@ -93,6 +93,7 @@ class MyConfiguration: NSObject {
     @DefaultsWrapper(.showEudicQuickLink) var showEudicQuickLink: Bool
     @DefaultsWrapper(.showAppleDictionaryQuickLink) var showAppleDictionaryQuickLink: Bool
     @DefaultsWrapper(.showQuickActionButton) var showQuickActionButton: Bool
+    @DefaultsWrapper(.enableAIExplain) var enableAIExplain: Bool
 
     @DefaultsWrapper(.appearanceType) var appearance: AppearanceType
     @DefaultsWrapper(.hideMenuBarIcon) var hideMenuBarIcon: Bool
@@ -323,6 +324,13 @@ class MyConfiguration: NSObject {
             }
             .store(in: &cancellables)
 
+        Defaults.publisher(.enableAIExplain, options: [])
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.didSetEnableAIExplain()
+            }
+            .store(in: &cancellables)
+
         Defaults.publisher(.hideMenuBarIcon, options: [])
             .removeDuplicates()
             .sink { [weak self] _ in
@@ -522,6 +530,12 @@ extension MyConfiguration {
         postUpdateQuickLinkButtonNotification()
 
         logSettings(["showSettingQuickLink": showQuickActionButton])
+    }
+
+    func didSetEnableAIExplain() {
+        postUpdateQuickLinkButtonNotification()
+
+        logSettings(["enable_ai_explain": enableAIExplain])
     }
 
     fileprivate func didSetHideMenuBarIcon() {

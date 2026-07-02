@@ -12,6 +12,14 @@
 
 import CocoaLumberjackSwift
 
+#if DEBUG
+@usableFromInline let swiftDefaultLogLevel = DDLogLevel.all
+@usableFromInline let swiftDefaultLogAsyncEnabled = false
+#else
+@usableFromInline let swiftDefaultLogLevel = DDLogLevel.info
+@usableFromInline let swiftDefaultLogAsyncEnabled = true
+#endif
+
 // Only log in debug mode, like MMLog.
 @inlinable
 public func log(
@@ -23,11 +31,11 @@ public func log(
 ) {
     DDLogVerbose(
         message(),
-        level: MMDefaultLogLevel,
+        level: swiftDefaultLogLevel,
         file: file,
         function: function,
         line: line,
-        asynchronous: MMDefaultLogAsyncEnabled.boolValue,
+        asynchronous: swiftDefaultLogAsyncEnabled,
         ddlog: ddlog
     )
 }
@@ -42,11 +50,11 @@ public func logInfo(
 ) {
     DDLogInfo(
         message(),
-        level: MMDefaultLogLevel,
+        level: swiftDefaultLogLevel,
         file: file,
         function: function,
         line: line,
-        asynchronous: MMDefaultLogAsyncEnabled.boolValue,
+        asynchronous: swiftDefaultLogAsyncEnabled,
         ddlog: ddlog
     )
 }
@@ -61,11 +69,11 @@ public func logWarn(
 ) {
     DDLogWarn(
         message(),
-        level: MMDefaultLogLevel,
+        level: swiftDefaultLogLevel,
         file: file,
         function: function,
         line: line,
-        asynchronous: MMDefaultLogAsyncEnabled.boolValue,
+        asynchronous: swiftDefaultLogAsyncEnabled,
         ddlog: ddlog
     )
 }
@@ -80,11 +88,11 @@ public func logError(
 ) {
     DDLogError(
         message(),
-        level: MMDefaultLogLevel,
+        level: swiftDefaultLogLevel,
         file: file,
         function: function,
         line: line,
-        asynchronous: MMDefaultLogAsyncEnabled.boolValue,
+        asynchronous: swiftDefaultLogAsyncEnabled,
         ddlog: ddlog
     )
 }
